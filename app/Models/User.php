@@ -44,6 +44,14 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    /**
+     * Get the posts for the user.
+     */
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'usuario_id');
+    }
+
     protected function casts(): array
     {
         return [

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\User;
+use App\Http\Requests\PostRequest;
 
 class PostController extends Controller
 {
@@ -12,7 +14,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::orderBy('titulo')->paginate(5);
+        $posts = Post::with('usuario')->orderBy('titulo')->paginate(5);
         return view('posts.index', compact('posts'));
     }
 
@@ -21,15 +23,27 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('posts.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
-        //
+        $post = new Post();
+        $post->titulo = $request->get('titulo');
+        $post->contenido = $request->get('contenido');
+
+        // Asignar el primer usuario disponible
+        $usuario = User::first();
+        if ($usuario) {
+            $post->usuario()->associate($usuario);
+        }
+
+        $post->save();
+
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -62,9 +76,10 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        Post::findOrFail($id)->delete();
-        $posts = Post::orderBy('titulo')->paginate(5);
-        return view('posts.index', compact('posts'));
+        $post = Post::findOrFail($id);
+        $post->delete();
+
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -77,7 +92,7 @@ class PostController extends Controller
         $post->titulo = "Título " . $numero;
         $post->contenido = "Contenido " . $numero;
         $post->save();
-        
+
         return redirect()->route('posts.index');
     }
 
@@ -91,7 +106,7 @@ class PostController extends Controller
         $post->titulo = "Título " . $numero;
         $post->contenido = "Contenido " . $numero;
         $post->save();
-        
+
         return redirect()->route('posts.index');
     }
 }
