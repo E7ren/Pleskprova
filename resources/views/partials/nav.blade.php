@@ -12,9 +12,27 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('posts.index') }}">Listado de posts</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('posts.create') }}">Nuevo post</a>
-                </li>
+                @if(auth()->check())
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('posts.create') }}">Nuevo post</a>
+                    </li>
+                @endif
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                @if(auth()->guest())
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('login') }}">Login</a>
+                    </li>
+                @else
+                    <li class="nav-item">
+                        <span class="navbar-text text-light me-3">
+                            {{ auth()->user()->login }}
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('logout') }}">Cerrar sesión</a>
+                    </li>
+                @endif
             </ul>
         </div>
     </div>

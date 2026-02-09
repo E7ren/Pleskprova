@@ -27,6 +27,7 @@ class User extends Authenticatable
     protected $fillable = [
         'login',
         'password',
+        'rol',
     ];
 
     /**
@@ -50,6 +51,14 @@ class User extends Authenticatable
     public function posts()
     {
         return $this->hasMany(Post::class, 'usuario_id');
+    }
+
+    /**
+     * Verificar si el usuario es administrador
+     */
+    public function esAdmin()
+    {
+        return $this->rol === 'admin';
     }
 
     protected function casts(): array

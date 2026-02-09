@@ -13,11 +13,17 @@
                         <h5 class="card-title">{{ $post->titulo }} @if($post->usuario)({{ $post->usuario->login }})@endif</h5>
                         <div class="d-flex justify-content-between align-items-center">
                             <a href="{{ route('posts.show', $post) }}" class="btn btn-primary btn-sm">Ver</a>
-                            <form action="{{ route('posts.destroy', $post) }}" method="POST" style="display: inline;">
-                                @method('DELETE')
-                                @csrf
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este post?')">Borrar</button>
-                            </form>
+
+                            @if(auth()->check() && (auth()->user()->esAdmin() || auth()->id() == $post->usuario_id))
+                                <div>
+                                    <a href="{{ route('posts.edit', $post) }}" class="btn btn-warning btn-sm">Editar</a>
+                                    <form action="{{ route('posts.destroy', $post) }}" method="POST" style="display: inline;">
+                                        @method('DELETE')
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este post?')">Borrar</button>
+                                    </form>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>

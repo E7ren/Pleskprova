@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\User;
 use App\Http\Requests\PostRequest;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -35,11 +36,8 @@ class PostController extends Controller
         $post->titulo = $request->get('titulo');
         $post->contenido = $request->get('contenido');
 
-        // Asignar el primer usuario disponible
-        $usuario = User::first();
-        if ($usuario) {
-            $post->usuario()->associate($usuario);
-        }
+        // Asignar el usuario autenticado
+        $post->usuario()->associate(Auth::user());
 
         $post->save();
 
@@ -60,7 +58,14 @@ class PostController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $post = Post::findOrFail($id);
+
+        // Los admin pueden editar cualquier post, los usuarios normales solo los suyos
+        if (!Auth::user()->esAdmin() && $post->usuario_id != Auth::id()) {
+            abort(403, 'No tienes permiso para editar este post');
+        }
+
+        return view('posts.edit', compact('post'));
     }
 
     /**
@@ -68,7 +73,18 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $post = Post::findOrFail($id);
+
+        // Los admin pueden modificar cualquier post, los usuarios normales solo los suyos
+        if (!Auth::user()->esAdmin() && $post->usuario_id != Auth::id()) {
+            abort(403, 'No tienes permiso para modificar este post');
+        }
+
+        $post->titulo = $request->get('titulo');
+        $post->contenido = $request->get('contenido');
+        $post->save();
+
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -77,6 +93,12 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
+
+        // Los admin pueden eliminar cualquier post, los usuarios normales solo los suyos
+        if (!Auth::user()->esAdmin() && $post->usuario_id != Auth::id()) {
+            abort(403, 'No tienes permiso para eliminar este post');
+        }
+
         $post->delete();
 
         return redirect()->route('posts.index');
