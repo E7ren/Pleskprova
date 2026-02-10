@@ -13,7 +13,7 @@ class UsuariosProduccionSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crear usuario efren con rol normal
+  
         User::updateOrCreate(
             ['login' => 'efren'],
             [
@@ -22,9 +22,8 @@ class UsuariosProduccionSeeder extends Seeder
             ]
         );
 
-        // Crear usuario admi con rol admin
         User::updateOrCreate(
-            ['login' => 'admi'],
+            ['login' => 'admin'],
             [
                 'password' => Hash::make('admin'),
                 'rol' => 'admin'
