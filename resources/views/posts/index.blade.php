@@ -3,7 +3,7 @@
 @section('titulo', 'Listado posts')
 
 @section('contenido')
-    <h1>Listado de posts</h1>
+    <h1>Listado de posts ieee</h1>
 
     <div class="row">
         <div class="col-md-12">
