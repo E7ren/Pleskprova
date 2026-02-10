@@ -3,10 +3,10 @@
 @section('titulo', 'Listado posts')
 
 @section('contenido')
-    <h1>Listado de posts ieee</h1>
+    <h1>Listado de posts </h1>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12 shadow-sm p-3 mb-5 bg-body rounded">
             @forelse ($posts as $post)
                 <div class="card mb-3">
                     <div class="card-body">
